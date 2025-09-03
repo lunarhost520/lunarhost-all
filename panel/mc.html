@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Launch Minecraft Server</title>
+  <style>
+    body { font-family: 'Inter', Arial, sans-serif; background: #355389; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;}
+    form { background: #3c5d8e; border-radius: 12px; padding: 32px 28px; box-shadow: 0 2px 14px #2227;}
+    label { display: block; margin: 18px 0 6px 0; font-size: 1.1em;}
+    select, input { width: 250px; padding: 8px 10px; font-size: 1em; border-radius: 6px; border: none; }
+    button { margin-top: 28px; background: #ffa600; color: #fff; border: none; border-radius: 10px; padding: 12px 40px; font-size: 1.2em; cursor: pointer;}
+    button:hover { background: #ffb733;}
+  </style>
+</head>
+<body>
+  <h2>Set Up Your Minecraft Server</h2>
+  <form id="server-form">
+    <label for="software">Server Software</label>
+    <select id="software" name="software" required>
+      <option value="Paper">Paper</option>
+      <option value="Spigot">Spigot</option>
+      <option value="Fabric">Fabric</option>
+    </select>
+    <label for="version">Minecraft Version</label>
+    <select id="version" name="version" required>
+      <option value="1.8.9">1.8.9</option>
+      <option value="1.16.5">1.16.5</option>
+      <option value="1.20.1">1.20.1</option>
+      <option value="1.21.8">1.21.8</option>
+    </select>
+    <label for="server_name">Server Name</label>
+    <input type="text" id="server_name" name="server_name" required placeholder="MyMCServer" maxlength="24" />
+    <button type="submit">Launch Server</button>
+  </form>
+  <script>
+    document.getElementById('server-form').onsubmit = async function(e) {
+      e.preventDefault();
+      const formData = {
+        software: document.getElementById('software').value,
+        version: document.getElementById('version').value,
+        server_name: document.getElementById('server_name').value
+      };
+      // Call your API endpoint to dispatch GitHub Action
+      const resp = await fetch('/api/launch-server', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(formData)
+      });
+      // Redirect to panel (could use info from resp if needed)
+      window.location.href = 'panel.html?server=' + encodeURIComponent(formData.server_name);
+    }
+  </script>
+</body>
+</html>
