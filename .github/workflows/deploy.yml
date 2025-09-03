@@ -1,0 +1,34 @@
+name: Deploy Minecraft Server
+
+on:
+  workflow_dispatch:
+    inputs:
+      server_name:
+        description: 'Server Name'
+        required: true
+      version:
+        description: 'Minecraft Version'
+        required: true
+      software:
+        description: 'Server Software'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Run deployer script
+        run: |
+          python scripts/setup_server.py "${{ github.event.inputs.server_name }}" "${{ github.event.inputs.version }}" "${{ github.event.inputs.software }}"
+      - name: Commit server folder
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add servers/${{ github.event.inputs.server_name }}
+          git commit -m "Setup server ${{ github.event.inputs.server_name }}"
+          git push
